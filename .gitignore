@@ -1,9 +1,12 @@
 # Custom
 *.pickle
 *.xz
-
+*.pkl
 data/raw/dutch/*
 
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
 
 
 
