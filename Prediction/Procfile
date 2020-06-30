@@ -1,0 +1,4 @@
+[process:gunicorn]
+cmd =  GUNICORN_CMD_ARGS="--bind=127.0.0.1 --workers=1"  gunicorn predict:__hug_wsgi__ 
+cwd = /home/samarpan/DeOfHet/Prediction
+

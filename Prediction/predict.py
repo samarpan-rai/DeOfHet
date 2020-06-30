@@ -3,14 +3,19 @@ import spacy
 import pickle
 import os
 
+from hug.middleware import CORSMiddleware
+
+api = hug.API(__name__)
+api.http.add_middleware(hug.middleware.CORSMiddleware(api, max_age=10))
+
 print(os.getcwd())
 print("Loading spacy..")
-nlp  = spacy.load('nl_core_news_lg') 
+nlp  = spacy.load('nl_core_news_lg',disable=['ner']) 
 
 
 print("Loading model..")
 # load pickled model
-with open("./model/random_forest_clf.pkl", "rb") as f:
+with open("random_forest_clf.pkl", "rb") as f:
     clf = pickle.load(f)
 
 def argmax(array):
@@ -19,7 +24,7 @@ def argmax(array):
 @hug.get('/predict')
 def predict(text : hug.types.shorter_than(500,convert=hug.types.text)):
     print("Making prediction on " + text)
-    doc = nlp(text)
+    doc = nlp(text.lower())
     
     validation_data = [(token.text, token.vector) for token in doc if token.pos_ == "NOUN"]
 
