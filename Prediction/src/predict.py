@@ -21,13 +21,19 @@ def predict(text : hug.types.shorter_than(500,convert=hug.types.text)):
     print("Making prediction on " + text)
     doc = nlp(text)
     
-    validation_data = [(token.text, token.vector) for token in doc if token.pos_ == "NOUN"]
-
+    validation_data = [ (
+                                    token.text, 
+                                    [child.text for child in token.children if child.pos_=="ADJ"] + [token.text], 
+                                    token.vector
+                        ) for token in doc if token.pos_ == "NOUN"]
     if len(validation_data) > 0:
     
         word_list   = [v[0] for v in validation_data]
+
         
-        vector_list = [v[1] for v in validation_data]
+        word_and_adjective_list = [" ".join(v[1]) for v in validation_data]
+
+        vector_list = [v[2] for v in validation_data]
         
         
         # make prediction with pure-predict object
@@ -35,9 +41,9 @@ def predict(text : hug.types.shorter_than(500,convert=hug.types.text)):
 
         json_result_list = []
         prediction_text = ['de','het']
-        for prediction, word in zip(predictions,word_list):
+        for prediction, word,word_and_adjective in zip(predictions,word_list,word_and_adjective_list):
             json_result = {}
-            json_result['woord'] = word
+            json_result['woord'] = word_and_adjective
             highest_proba_index = argmax(prediction)
             highest_proba = prediction[highest_proba_index]
             highest_proba_name = prediction_text[highest_proba_index]
