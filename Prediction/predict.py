@@ -2,13 +2,11 @@ import hug
 import spacy
 import pickle
 import os
-
 from hug.middleware import CORSMiddleware
 
 api = hug.API(__name__)
 api.http.add_middleware(hug.middleware.CORSMiddleware(api, max_age=10))
 
-print(os.getcwd())
 print("Loading spacy..")
 nlp  = spacy.load('nl_core_news_lg',disable=['ner']) 
 
